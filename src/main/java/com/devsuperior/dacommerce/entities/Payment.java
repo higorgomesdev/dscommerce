@@ -61,7 +61,7 @@ public class Payment {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, order);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -73,8 +73,10 @@ public class Payment {
 		if (getClass() != obj.getClass())
 			return false;
 		Payment other = (Payment) obj;
-		return Objects.equals(id, other.id) && Objects.equals(order, other.order);
+		return Objects.equals(id, other.id);
 	}
-	
+
 	
 }
+
+

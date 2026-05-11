@@ -109,7 +109,11 @@ public class User implements UserDetails{
 	public List<Order> getOrders() {
 		return orders;
 	}
-
+	
+	public void addRole(Role role) {
+		roles.add(role);
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

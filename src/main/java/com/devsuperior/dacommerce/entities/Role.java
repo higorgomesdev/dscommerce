@@ -2,6 +2,8 @@ package com.devsuperior.dacommerce.entities;
 
 
 
+import java.util.Objects;
+
 import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.Entity;
@@ -43,6 +45,23 @@ public class Role  implements GrantedAuthority{
 
 	public void setAuthority(String authority) {
 		this.authority = authority;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(authority);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Role other = (Role) obj;
+		return Objects.equals(authority, other.authority);
 	}
 	
 	

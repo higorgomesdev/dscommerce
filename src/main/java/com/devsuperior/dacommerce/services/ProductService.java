@@ -1,9 +1,6 @@
 package com.devsuperior.dacommerce.services;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -13,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.dacommerce.DTO.ProductDTO;
+import com.devsuperior.dacommerce.DTO.ProductMinDTO;
 import com.devsuperior.dacommerce.entities.Product;
 import com.devsuperior.dacommerce.repositories.ProductRepository;
 import com.devsuperior.dacommerce.services.exceptions.DataBaseException;
@@ -33,9 +31,9 @@ public class ProductService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Page<ProductDTO> findAll(String name, Pageable pageable){
+	public Page<ProductMinDTO> findAll(String name, Pageable pageable){
 		Page<Product> result = repository.searchByName(name, pageable);
-		return result.map(p-> new ProductDTO(p));
+		return result.map(p-> new ProductMinDTO(p));
 	}
 	
 	@Transactional

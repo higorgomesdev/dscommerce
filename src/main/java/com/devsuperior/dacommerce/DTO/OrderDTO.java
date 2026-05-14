@@ -8,6 +8,8 @@ import com.devsuperior.dacommerce.entities.Order;
 import com.devsuperior.dacommerce.entities.OrderItem;
 import com.devsuperior.dacommerce.enums.OrderStatus;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class OrderDTO {
 	
 	private Long id;
@@ -18,6 +20,7 @@ public class OrderDTO {
 	
 	private PaymentDTO payment;
 	
+	@NotEmpty
 	private List<OrderItemDTO> items = new ArrayList<>();
 	
 	public OrderDTO() {

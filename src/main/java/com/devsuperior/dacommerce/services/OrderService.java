@@ -1,28 +1,34 @@
 package com.devsuperior.dacommerce.services;
 
 
+import java.time.Instant;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.devsuperior.dacommerce.DTO.CategoryDTO;
 import com.devsuperior.dacommerce.DTO.OrderDTO;
-import com.devsuperior.dacommerce.DTO.ProductDTO;
-import com.devsuperior.dacommerce.DTO.ProductMinDTO;
-import com.devsuperior.dacommerce.entities.Category;
+import com.devsuperior.dacommerce.DTO.OrderItemDTO;
+import com.devsuperior.dacommerce.entities.Order;
+import com.devsuperior.dacommerce.entities.OrderItem;
 import com.devsuperior.dacommerce.entities.Product;
+import com.devsuperior.dacommerce.enums.OrderStatus;
+import com.devsuperior.dacommerce.repositories.OrderItemRepository;
 import com.devsuperior.dacommerce.repositories.OrderRepository;
-import com.devsuperior.dacommerce.services.exceptions.DataBaseException;
+import com.devsuperior.dacommerce.repositories.ProductRepository;
 import com.devsuperior.dacommerce.services.exceptions.ResourceNotFoundException;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class OrderService {
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	private ProductRepository productRepository;
+	
+	@Autowired
+	private OrderItemRepository orderItemRepository;
 	
 	@Autowired
 	private OrderRepository repository;
@@ -31,6 +37,27 @@ public class OrderService {
 	public OrderDTO findById(Long id) {
 		OrderDTO dto = new OrderDTO(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado")));
 		return dto;
+	}
+	
+	@Transactional
+	public OrderDTO insert(OrderDTO dto) {
+		Order order = new Order();
+		order.setMoment(Instant.now());
+		order.setStatus(OrderStatus.WAITING_PAYMENT);
+		order.setClient(userService.authenticated());
+		for(OrderItemDTO itemDTO : dto.getItems()) {
+			Product product = productRepository.getReferenceById(itemDTO.getProductId());
+			OrderItem item = new OrderItem();
+			item.setOrder(order);
+			item.setProduct(product);
+			item.setQuantity(itemDTO.getQuantity());
+			item.setPrice(product.getPrice());
+			order.getItems().add(item);
+		}
+		repository.save(order);
+		orderItemRepository.saveAll(order.getItems());
+		return new OrderDTO(order);
+		
 	}
 	
 }

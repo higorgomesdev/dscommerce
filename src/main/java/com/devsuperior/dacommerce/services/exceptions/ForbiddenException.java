@@ -1,9 +1,9 @@
 package com.devsuperior.dacommerce.services.exceptions;
 
 @SuppressWarnings("serial")
-public class DataBaseException extends RuntimeException{
+public class ForbiddenException extends RuntimeException{
 	
-	public DataBaseException(String msg) {
+	public ForbiddenException(String msg) {
 		super(msg);
 	}
 

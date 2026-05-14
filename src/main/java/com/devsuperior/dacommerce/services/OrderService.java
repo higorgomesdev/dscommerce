@@ -12,10 +12,12 @@ import com.devsuperior.dacommerce.DTO.OrderItemDTO;
 import com.devsuperior.dacommerce.entities.Order;
 import com.devsuperior.dacommerce.entities.OrderItem;
 import com.devsuperior.dacommerce.entities.Product;
+import com.devsuperior.dacommerce.entities.User;
 import com.devsuperior.dacommerce.enums.OrderStatus;
 import com.devsuperior.dacommerce.repositories.OrderItemRepository;
 import com.devsuperior.dacommerce.repositories.OrderRepository;
 import com.devsuperior.dacommerce.repositories.ProductRepository;
+import com.devsuperior.dacommerce.services.exceptions.ForbiddenException;
 import com.devsuperior.dacommerce.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -31,11 +33,15 @@ public class OrderService {
 	private OrderItemRepository orderItemRepository;
 	
 	@Autowired
+	private AuthService authService;
+	
+	@Autowired
 	private OrderRepository repository;
 	
 	@Transactional(readOnly = true)
 	public OrderDTO findById(Long id) {
 		OrderDTO dto = new OrderDTO(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado")));
+		authService.validateselfOrAdmin(dto.getClient().getId());
 		return dto;
 	}
 	
